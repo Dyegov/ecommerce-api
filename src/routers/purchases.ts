@@ -8,7 +8,7 @@ import {
 
 export const purchasesRouter = Router();
 
-purchasesRouter.get("/:id", getPurchases);
+purchasesRouter.get("/", getPurchases);
 purchasesRouter.post("/", createPurchase);
 purchasesRouter.put("/:id", editPurchase);
 purchasesRouter.delete("/:id", deletePurchase);
