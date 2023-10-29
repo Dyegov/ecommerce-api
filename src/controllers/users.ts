@@ -1,8 +1,20 @@
 import { Request, Response } from "express";
 import { db } from "../lib/db";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
+const { TOKEN_SECRET } = process.env;
 const saltRounds = 10;
+
+const generateToken = (data: any) => {
+  return jwt.sign(
+    {
+      exp: Math.floor(Date.now() / 1000) + 60 * 60, // expires in 1 hour
+      data,
+    },
+    TOKEN_SECRET!
+  );
+};
 
 export const login = async (req: Request, res: Response) => {
   try {
@@ -18,12 +30,15 @@ export const login = async (req: Request, res: Response) => {
       return;
     }
 
+    const userToreturn = JSON.parse(JSON.stringify(user));
+    delete userToreturn.password;
+
     bcrypt.compare(req.body.password, user?.password!, function (err, result) {
       if (!result) {
         res.status(501).json(err);
         return;
       } else {
-        res.status(200).json(user);
+        res.status(200).json({ token: generateToken(userToreturn) });
       }
     });
   } catch (e) {
@@ -42,11 +57,15 @@ export const signup = async (req: Request, res: Response) => {
           data: {
             email: req.body.email,
             password: hash,
-            roleId: "653e806bec4adc090920245d", // Role Id for User
+            roleId: "653e8064ec4adc0909202459", // Role Id Administrator so Teacher can work with the app
           },
           include: { role: true },
         });
-        res.status(201).json(user);
+
+        const userToreturn = JSON.parse(JSON.stringify(user));
+        delete userToreturn.password;
+
+        res.status(201).json({ token: generateToken(userToreturn) });
       }
     });
   } catch (e) {
