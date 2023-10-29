@@ -11,11 +11,12 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  email    String @unique
-  password String
-  role     Role   @relation(fields: [roleId], references: [id])
-  roleId   String @db.ObjectId
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  email     String     @unique
+  password  String
+  role      Role       @relation(fields: [roleId], references: [id])
+  roleId    String     @db.ObjectId
+  purchases Purchase[]
 }
 
 model Role {
@@ -32,10 +33,19 @@ model Product {
   categoryId String   @db.ObjectId
   amount     Int
   price      Int
+  purchaseId String?  @db.ObjectId
 }
 
 model Category {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
   name     String
   products Product[]
+}
+
+model Purchase {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  user     User     @relation(fields: [userId], references: [id])
+  userId   String   @db.ObjectId
+  products String[]
+  total    Int
 }

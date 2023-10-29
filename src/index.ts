@@ -12,11 +12,13 @@ const { PORT } = process.env;
 import { productsRouter } from "./routers/products";
 import { categoriesRouter } from "./routers/categories";
 import { usersRouter } from "./routers/users";
+import { purchasesRouter } from "./routers/purchases";
 
 // Endpoints
 app.use("/products", productsRouter);
 app.use("/categories", categoriesRouter);
 app.use("/users", usersRouter);
+app.use("/purchases", purchasesRouter);
 
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
